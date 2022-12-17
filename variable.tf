@@ -8,7 +8,7 @@ variable "instance_type" { type = string }
 
 variable "key_name" { type = string } 
 
-variable "private_key" { type = string }
+# variable "private_key" { type = string }
 
 variable "asg_min_size" { type = number }
 
@@ -40,6 +40,7 @@ variable "policy_up_ajustment_type" { type = string }
 
 variable "policy_up_cooldown" { type = number }
 
+# Defining alarm up configurations
 variable "alarm_up_comparison_operator" { type = string }
 
 variable "alarm_up_evaluation_periods" {type = string }
@@ -61,6 +62,7 @@ variable "policy_down_ajustment_type" { type = string }
 
 variable "policy_down_cooldown" { type = number }
 
+# Defining alarm down configurations
 variable "alarm_down_comparison_operator" { type = string }
 
 variable "alarm_down_evaluation_periods" {type = string }

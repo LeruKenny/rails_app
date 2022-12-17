@@ -6,7 +6,7 @@ resource "aws_launch_configuration" "app" {
   instance_type = var.instance_type
   key_name = var.key_name
 
-  security_groups = [ "${aws_security_group.demosg.id}" ]
+  security_groups = [ "${aws_security_group.appsg.id}" ]
   associate_public_ip_address = true
   user_data = "${file("data.sh")}"
 
@@ -19,13 +19,13 @@ resource "aws_launch_configuration" "app" {
 resource "aws_autoscaling_group" "app" {
   name = "${aws_launch_configuration.app.name}-asg"
 
-  min_size             = var.asd_min_size
+  min_size             = var.asg_min_size
   desired_capacity     = var.asg_desired_capacity
   max_size             = var.asg_max_size
   
   health_check_type    = "ELB"
   load_balancers = [
-    "${aws_elb.web_elb.id}"
+    "${aws_elb.app_elb.id}"
   ]
 
   launch_configuration = "${aws_launch_configuration.app.name}"
@@ -93,7 +93,7 @@ resource "aws_elb" "app_elb" {
 }
 
 # Creating Internet Gateway 
-resource "aws_internet_gateway" "demogateway" {
+resource "aws_internet_gateway" "appgateway" {
   vpc_id = "${aws_vpc.appvpc.id}"
 }
 

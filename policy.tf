@@ -29,7 +29,7 @@ resource "aws_autoscaling_policy" "app_policy_down" {
   scaling_adjustment = var.policy_down_scaling_adjustment
   adjustment_type = var.policy_down_ajustment_type
   cooldown = var.policy_down_cooldown
-  autoscaling_group_name = "${aws_autoscaling_group.web.name}"
+  autoscaling_group_name = "${aws_autoscaling_group.app.name}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "app_cpu_alarm_down" {
