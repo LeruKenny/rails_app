@@ -35,6 +35,7 @@ resource "aws_autoscaling_policy" "app_policy_down" {
 resource "aws_cloudwatch_metric_alarm" "app_cpu_alarm_down" {
   alarm_name = "${aws_launch_configuration.app.name}_cpu_alarm_down"
   comparison_operator = "${var.alarm_down_comparison_operator}"
+  evaluation_periods = "${var.alarm_down_evaluation_periods}"
   metric_name = "${var.alarm_down_metric_name}"
   namespace = "${var.alarm_down_namespace}"
   period = "${var.alarm_down_period}"
