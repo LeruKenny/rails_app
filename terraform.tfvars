@@ -3,6 +3,7 @@ name = "rails"
 image_id = "ami-0574da719dca65348"
 instance_type = "t2.micro"
 key_name = "test1"
+user_data = "data.sh"
 
 asg_desired_capacity = 2
 asg_min_size = 1

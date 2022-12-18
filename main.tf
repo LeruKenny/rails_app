@@ -1,10 +1,10 @@
 # lauch config for EC2 instance 
 resource "aws_launch_configuration" "app" {
-  name = var.name
+  name = "${var.name}"
 
-  image_id = var.image_id 
-  instance_type = var.instance_type
-  key_name = var.key_name
+  image_id = "${var.image_id}" 
+  instance_type = "${var.instance_type}"
+  key_name = "${var.key_name}"
 
   security_groups = [ "${aws_security_group.appsg.id}" ]
   associate_public_ip_address = true
@@ -19,9 +19,9 @@ resource "aws_launch_configuration" "app" {
 resource "aws_autoscaling_group" "app" {
   name = "${aws_launch_configuration.app.name}-asg"
 
-  min_size             = var.asg_min_size
-  desired_capacity     = var.asg_desired_capacity
-  max_size             = var.asg_max_size
+  min_size             = "${var.asg_min_size}"
+  desired_capacity     = "${var.asg_desired_capacity}"
+  max_size             = "${var.asg_max_size}"
   
   health_check_type    = "ELB"
   load_balancers = [
@@ -30,9 +30,9 @@ resource "aws_autoscaling_group" "app" {
 
   launch_configuration = "${aws_launch_configuration.app.name}"
 
-  enabled_metrics = var.enabled_metrics
+  enabled_metrics = "${var.enabled_metrics}"
 
-  metrics_granularity = var.metrics_granularity
+  metrics_granularity = "${var.metrics_granularity}"
 
   vpc_zone_identifier  = [
     "${aws_subnet.appsubnet.id}",
@@ -102,7 +102,7 @@ resource "aws_subnet" "appsubnet" {
   vpc_id                  = "${aws_vpc.appvpc.id}"
   cidr_block             = "${var.subnet_cidr}"
   map_public_ip_on_launch = true
-  availability_zone = var.subnet_availability_zone
+  availability_zone = "${var.subnet_availability_zone}"
 
   tags = {
     Name = "app subnet"
@@ -114,7 +114,7 @@ resource "aws_subnet" "appsubnet1" {
   vpc_id                  = "${aws_vpc.appvpc.id}"
   cidr_block             = "${var.subnet1_cidr}"
   map_public_ip_on_launch = true
-  availability_zone = var.subnet1_availability_zone
+  availability_zone = "${var.subnet1_availability_zone}"
 
   tags = {
     Name = "app subnet 1"
