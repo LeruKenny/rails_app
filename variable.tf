@@ -26,8 +26,8 @@ variable "key_name" {
 variable "associate_public_ip_address" {
   type = bool
   description = "to set up associate public ip address"
+  default = true
 }
-
 
 variable "user_data" {
   type = string
@@ -81,42 +81,52 @@ variable "vpc-tags" {
 
 variable "app_elb_cross_zone_load_balancing" {
   type = bool
+  default = true
 }
 
 variable "app_elb_health_check_healthy_threshold" {
   type = number
+  default = 2
 }
 
 variable "app_elb_health_check_unhealthy_threshold" {
   type = number
+  default = 2
 }
 
 variable "app_elb_health_check_timeout" {
   type = number
+  default = 3
 }
 
 variable "app_elb_health_check_interval" {
   type = number
+  default = 30
 }
 
 variable "app_elb_health_check_target" {
   type = string
+  default = "HTTP:80/"
 }
 
 variable "app_elb_listener_lb_port" {
   type = number
+  default = 80 
 }
 
 variable "app_elb_listener_lb_protocol" {
   type = string
+  default = "http"
 }
 
 variable "app_elb_listener_instance_port" {
   type = number
+  default = 80
 }
 
 variable "app_elb_listener_instance_protocol" {
   type = string
+  default = "http"
 }
 
 
@@ -153,102 +163,122 @@ variable "route_tags" {
 variable "policy_up_scaling_adjustment" {
     type = number
     description = "aws policy up scaling adjustment" 
+    default = 1
 }
 
 variable "policy_up_ajustment_type" { 
     type = string
     description = "aws policy up adjustment type"
+    default = "ChangeInCapacity"
 }
 
 variable "policy_up_cooldown" { 
     type = number
     description = "aws policy up cooldown"
+    default = 300
 }
 
 # Defining alarm up configurations
 variable "alarm_up_comparison_operator" {
     type = string
     description = "aws alarm up comparison operator"
+    default = "GreaterThanOrEqualToThreshold"
 }
 
 variable "alarm_up_evaluation_periods" {
-    type = string 
-    description = "aws alarm up evalaution periods"    
+    type = number 
+    description = "aws alarm up evalaution periods" 
+    default = 2  
 }
 
 variable "alarm_up_metric_name" {
     type = string
     description = "aws alarm up metric name"
+    default = "CPUUtilization"
 }
 
 variable "alarm_up_namespace" {
     type = string
     description = "aws alarm up namespace"
+    default = "AWS/EC2"
 }
 
 variable "alarm_up_period" {
-    type = string 
+    type = number 
     description = "aws alarm up period"
+    default = 120
 }
 
 variable "alarm_up_statistic" {
     type = string
     description = "aws alarm up statistics"
+    default = "Average"
 }
 
 variable "alarm_up_threshold" {
-    type = string 
+    type = number
     description = "aws alarm up threshold"
+    default = 70
 }
 
 # Defining policy down configurations
 variable "policy_down_scaling_adjustment" { 
     type = number 
     description = "aws policy down scaling adjustment"
+    default = -1
 }
 
 variable "policy_down_ajustment_type" {
     type = string 
     description = "aws policy down adjustment"
+    default = "ChangeInCapacity"
 }
 
 variable "policy_down_cooldown" {
     type = number 
     description = "aws policy down cooldown"
+    default = 300
 }
 
 # Defining alarm down configurations
 variable "alarm_down_comparison_operator" {
     type = string 
     description = "aws alarm down comparison operator"
+    default = "LessThanOrEqualToThreshold"
 }
 
 variable "alarm_down_evaluation_periods" {
-    type = string 
+    type = number
     description = "aws alarm down evaluation periods"
+    default = 2
 }
 
 variable "alarm_down_metric_name" {
     type = string 
-    description = "aws alarm down metric name"    
+    description = "aws alarm down metric name"  
+    default = "CPUUtilization"  
 }
 
 variable "alarm_down_namespace" {
     type = string 
     description = "aws alarm down namespace"
+    default = "AWS/EC2"
 }
 
 variable "alarm_down_period" {
-    type = string 
+    type = number 
     description = "aws alarm down period"
+    default = 120
 }
 
 variable "alarm_down_statistic" {
     type = string 
     description = "aws alarm down statistics"
+    default = "Average"
 }
 
 variable "alarm_down_threshold" {
-    type = string 
+    type = number 
     description = "aws alarm down threshold"
+    default = 30
 }

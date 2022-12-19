@@ -32,3 +32,4 @@ fi
 cd ..
 
 cp -v *.tf ./environments/${workspace}
+cp -v *.tfvars ./environments/${workspace}/${workspace}.tfvars

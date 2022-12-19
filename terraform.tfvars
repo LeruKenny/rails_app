@@ -3,9 +3,8 @@ region = "us-east-1"
 name = "rails"
 image_id = "ami-0574da719dca65348"
 instance_type = "t2.micro"
-key_name = "test1"
+key_name = ""
 security_group_id = "aws_security_group.appsg.id"
-associate_public_ip_address = true
 user_data = "data.sh"
 
 asg_min_size = 1
@@ -25,21 +24,8 @@ instance_tenancy = "default"
 vpc-tags = {
   Name = "App VPC"
 }
+
 vpc_id  = "aws_vpc.appvpc.id"
-
-#app_elb_name = "aws_launch_configuration.app.name"
-
-app_elb_cross_zone_load_balancing = true
-app_elb_health_check_healthy_threshold = 2
-app_elb_health_check_unhealthy_threshold = 2
-app_elb_health_check_timeout = 3
-app_elb_health_check_interval = 30
-app_elb_health_check_target = "HTTP:80/"
-app_elb_listener_lb_port = 80
-app_elb_listener_lb_protocol = "http"
-app_elb_listener_instance_port = "80"
-app_elb_listener_instance_protocol = "http"
-
 
 subnet_cidr = "10.0.1.0/24"
 subnet_availability_zone = "us-east-1a"
@@ -51,28 +37,3 @@ route_cidr_block  = "0.0.0.0/0"
 route_tags = {
   Name = "Route to internet"
 }
-
-
-policy_up_scaling_adjustment = 1
-policy_up_ajustment_type = "ChangeInCapacity"
-policy_up_cooldown = 300
-
-alarm_up_comparison_operator = "GreaterThanOrEqualToThreshold"
-alarm_up_evaluation_periods = 2
-alarm_up_metric_name = "CPUUtilization"
-alarm_up_namespace = "AWS/EC2"
-alarm_up_period = 120
-alarm_up_statistic = "Average"
-alarm_up_threshold = 70
-
-policy_down_scaling_adjustment = -1
-policy_down_ajustment_type = "ChangeInCapacity"
-policy_down_cooldown = 300
-
-alarm_down_comparison_operator = "LessThanOrEqualToThreshold"
-alarm_down_evaluation_periods = 2
-alarm_down_metric_name = "CPUUtilization"
-alarm_down_namespace = "AWS/EC2"
-alarm_down_period = 120
-alarm_down_statistic = "Average"
-alarm_down_threshold = 30
