@@ -1,10 +1,12 @@
-### AUTO SCALING GROUP 
+# AUTO SCALING GROUP 
+![autoscaling](./autoscaling.jpeg)
+A terraform module to deploy resources using an autoscaling group for scalability, cloudwatch for observability, vpc and security groups for securability and load balancers for availability
 
 
 ## SCAFFOLDING SCRIPT 
 A bash script "scaffold.sh"
 
-Un-opinionated lightweight scaffolding of a basic terraform repo. Deliberately lightweight (& for the time being un-finished).
+Un-opinionated lightweight scaffolding of a basic terraform repo. Deliberately lightweight (& for the time being un-finished).it is used to create terraform files to deploy to different environments 
 
 to run scaffold script 
 ```
