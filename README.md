@@ -1,3 +1,6 @@
+### AUTO SCALING GROUP 
+
+
 ## SCAFFOLDING SCRIPT 
 A bash script "scaffold.sh"
 

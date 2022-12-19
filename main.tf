@@ -1,147 +1,82 @@
-# lauch config for EC2 instance 
-resource "aws_launch_configuration" "app" {
-  name = "${var.name}"
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "4.47.0"
+    }
+  }
+}
 
-  image_id = "${var.image_id}" 
+provider "aws" {
+    region = var.region
+}
+
+module "ASG" {
+  source = "./modules/main"
+
+  region = "${var.region}"
+
+  name = "${var.name}"
+  image_id = "${var.image_id}"
   instance_type = "${var.instance_type}"
   key_name = "${var.key_name}"
+  associate_public_ip_address = "${var.associate_public_ip_address}"
+  user_data = "${var.user_data}"
 
-  security_groups = [ "${aws_security_group.appsg.id}" ]
-  associate_public_ip_address = true
-  user_data = "${file("data.sh")}"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# auto-scaling group configuration
-resource "aws_autoscaling_group" "app" {
-  name = "${aws_launch_configuration.app.name}-asg"
-
-  min_size             = "${var.asg_min_size}"
-  desired_capacity     = "${var.asg_desired_capacity}"
-  max_size             = "${var.asg_max_size}"
-  
-  health_check_type    = "ELB"
-  load_balancers = [
-    "${aws_elb.app_elb.id}"
-  ]
-
-  launch_configuration = "${aws_launch_configuration.app.name}"
-
+  asg_min_size = "${var.asg_min_size}"
+  asg_desired_capacity = "${var.asg_desired_capacity}"
+  asg_max_size = "${var.asg_max_size}"
   enabled_metrics = "${var.enabled_metrics}"
-
   metrics_granularity = "${var.metrics_granularity}"
 
-  vpc_zone_identifier  = [
-    "${aws_subnet.appsubnet.id}",
-    "${aws_subnet.appsubnet1.id}"
-  ]
+  vpc_cidr = "${var.vpc_cidr}"
+  instance_tenancy = "${var.instance_tenancy}"
+  vpc-tags = "${var.vpc-tags}"
 
-  # Required to redeploy without an outage.
-  lifecycle {
-    create_before_destroy = true
-  }
+  app_elb_cross_zone_load_balancing = "${var.app_elb_cross_zone_load_balancing}"
+  app_elb_health_check_healthy_threshold = "${var.app_elb_health_check_healthy_threshold}"
+  app_elb_health_check_unhealthy_threshold = "${var.app_elb_health_check_unhealthy_threshold}"
+  app_elb_health_check_timeout = "${var.app_elb_health_check_timeout}"
+  app_elb_health_check_interval = "${var.app_elb_health_check_interval}"
+  app_elb_health_check_target = "${var.app_elb_health_check_target}"
+  app_elb_listener_lb_port = "${var.app_elb_listener_lb_port}"
+  app_elb_listener_lb_protocol = "${var.app_elb_listener_lb_protocol}"
+  app_elb_listener_instance_port = "${var.app_elb_listener_instance_port}"
+  app_elb_listener_instance_protocol = "${var.app_elb_listener_instance_protocol}"
 
-  tag {
-    key                 = "Name"
-    value               = "app"
-    propagate_at_launch = true
-  }
+  subnet_cidr = "${var.subnet_cidr}"
+  subnet_availability_zone = "${var.subnet_availability_zone}"
+  subnet1_cidr = "${var.subnet1_cidr}"
+  subnet1_availability_zone = "${var.subnet1_availability_zone}"
 
+  route_cidr_block =  "${var.route_cidr_block}"
+  route_tags = "${var.route_tags}"
+
+  policy_up_scaling_adjustment = "${var.policy_up_scaling_adjustment}"
+  policy_up_ajustment_type = "${var.policy_up_ajustment_type}"
+  policy_up_cooldown = "${var.policy_up_cooldown}"
+
+  alarm_up_comparison_operator = "${var.alarm_up_comparison_operator}"
+  alarm_up_evaluation_periods = "${var.alarm_up_evaluation_periods}"
+  alarm_up_metric_name = "${var.alarm_up_metric_name}"
+  alarm_up_namespace = "${var.alarm_up_namespace}"
+  alarm_up_period = "${var.alarm_up_period}"
+  alarm_up_statistic = "${var.alarm_up_statistic}"
+  alarm_up_threshold = "${var.alarm_up_threshold}"
+
+  policy_down_scaling_adjustment = "${var.policy_down_scaling_adjustment}"
+  policy_down_ajustment_type = "${var.policy_down_ajustment_type}"
+  policy_down_cooldown = "${var.policy_down_cooldown}"
+
+  alarm_down_comparison_operator = "${var.alarm_down_comparison_operator}"
+  alarm_down_evaluation_periods = "${var.alarm_down_evaluation_periods}"
+  alarm_down_metric_name = "${var.alarm_down_metric_name}"
+  alarm_down_namespace = "${var.alarm_down_namespace}"
+  alarm_down_period = "${var.alarm_down_period}"
+  alarm_down_statistic = "${var.alarm_down_statistic}"
+  alarm_down_threshold = "${var.alarm_down_threshold}"
+  
 }
 
-#Creating VPC
-resource "aws_vpc" "appvpc" {
-  cidr_block       = "${var.vpc_cidr}"
-  instance_tenancy = "default"
 
-  tags = {
-    Name = "App VPC"
-  }
-}
-
-# load balancer configuration
-resource "aws_elb" "app_elb" {
-  name = "${aws_launch_configuration.app.name}-elb"
-  security_groups = [
-    "${aws_security_group.appsg1.id}"
-  ]
-  subnets = [
-    "${aws_subnet.appsubnet.id}",
-    "${aws_subnet.appsubnet1.id}"
-  ]
-
-  cross_zone_load_balancing   = true
-
-  health_check {
-    healthy_threshold = 2
-    unhealthy_threshold = 2
-    timeout = 3
-    interval = 30
-    target = "HTTP:80/"
-  }
-
-  listener {
-    lb_port = 80
-    lb_protocol = "http"
-    instance_port = "80"
-    instance_protocol = "http"
-  }
-
-}
-
-# Creating Internet Gateway 
-resource "aws_internet_gateway" "appgateway" {
-  vpc_id = "${aws_vpc.appvpc.id}"
-}
-
-# Creating 1st subnet 
-resource "aws_subnet" "appsubnet" {
-  vpc_id                  = "${aws_vpc.appvpc.id}"
-  cidr_block             = "${var.subnet_cidr}"
-  map_public_ip_on_launch = true
-  availability_zone = "${var.subnet_availability_zone}"
-
-  tags = {
-    Name = "app subnet"
-  }
-}
-
-# Creating 2nd subnet 
-resource "aws_subnet" "appsubnet1" {
-  vpc_id                  = "${aws_vpc.appvpc.id}"
-  cidr_block             = "${var.subnet1_cidr}"
-  map_public_ip_on_launch = true
-  availability_zone = "${var.subnet1_availability_zone}"
-
-  tags = {
-    Name = "app subnet 1"
-  }
-}
-
-#Creating Route Table
-resource "aws_route_table" "route" {
-    vpc_id = "${aws_vpc.appvpc.id}"
-
-    route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = "${aws_internet_gateway.appgateway.id}"
-    }
-
-    tags = {
-        Name = "Route to internet"
-    }
-}
-
-resource "aws_route_table_association" "rt1" {
-    subnet_id = "${aws_subnet.appsubnet.id}"
-    route_table_id = "${aws_route_table.route.id}"
-}
-
-resource "aws_route_table_association" "rt2" {
-    subnet_id = "${aws_subnet.appsubnet1.id}"
-    route_table_id = "${aws_route_table.route.id}"
-}
 

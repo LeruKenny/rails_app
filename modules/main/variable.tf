@@ -28,7 +28,6 @@ variable "associate_public_ip_address" {
   description = "to set up associate public ip address"
 }
 
-
 variable "user_data" {
   type = string
   description = "name of user data file"
