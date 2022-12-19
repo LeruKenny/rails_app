@@ -37,47 +37,58 @@ variable "user_data" {
 variable "asg_min_size" { 
   type = number 
   description = "auto scaling group minimum size"
+  default = 1
 }
 
 variable "asg_max_size" { 
   type = number
   description = "auto scaling group maximum size" 
+  default = 2
 }
 
 variable "asg_desired_capacity" { 
   type = number 
   description = "auto scaling group desired capacity"
+  default = 2
 }
 
 variable "enabled_metrics" { 
   type = list(string)
   description = "autoscaling enabled metrics"
+  default = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupTotalInstances"
+  ]
 }
 
 variable "metrics_granularity" { 
   type = string
-  description = "auto scaling metrics granularity" 
+  description = "auto scaling metrics granularity"
+  default = "1Minute"
 }
 
 variable "vpc_cidr" {
   type = string
   description = "The CIDR block for the VPC."
+  default = "10.0.0.0/16"
 }
 
 variable "instance_tenancy" {
   type = string
   description = "The instance tenancy for the VPC."
+  default = "default"
 }
 
 variable "vpc-tags" {
   type = map(string)
   description = "The tags for the VPC."
+  default = {
+    Name = "App VPC"
+  }
 }
-
-
-# variable "app_elb_name" {
-#   type = string
-# }
 
 variable "app_elb_cross_zone_load_balancing" {
   type = bool
@@ -133,6 +144,7 @@ variable "app_elb_listener_instance_protocol" {
 variable "subnet_cidr" {
   description = "CIDR block for the first subnet."
   type        = string
+  default = "10.0.1.0/24"
 }
 
 variable "subnet_availability_zone" {
@@ -143,6 +155,7 @@ variable "subnet_availability_zone" {
 variable "subnet1_cidr" {
   description = "CIDR block for the second subnet."
   type        = string
+  default = "10.0.2.0/24"
 }
 
 variable "subnet1_availability_zone" {
@@ -153,11 +166,15 @@ variable "subnet1_availability_zone" {
 variable "route_cidr_block" {
   type = string
   description = "cidr block of the route table"
+  default = "0.0.0.0/0"
 }
 
 variable "route_tags" {
   type = map(string)
   description = "A map of tags to assign to the route table"
+  default = {
+    Name = "Route to internet"
+  }
 }
 
 variable "policy_up_scaling_adjustment" {
